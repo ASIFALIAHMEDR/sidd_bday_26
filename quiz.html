@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アニメチャレンジ 🎮</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --accent-red: #d32f2f;
+            --accent-gold: #ffd700;
+            --accent-sakura: #ffb7c5;
+            --accent-indigo: #4a5899;
+            --text-light: #f5f5f5;
+            --text-warm: #e8d5c4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(211, 47, 47, 0.3);
+            border: 2px solid var(--accent-gold);
+            color: var(--text-light);
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-red);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .japanese-header {
+            font-size: 2rem;
+            color: var(--accent-sakura);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3em;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        h1 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(74, 88, 153, 0.3), rgba(211, 47, 47, 0.2));
+            border: 3px solid var(--accent-gold);
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .score-display h2 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-sakura);
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, rgba(15, 15, 30, 0.9), rgba(26, 26, 46, 0.8));
+            border: 3px solid var(--accent-gold);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: scaleIn 0.8s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .question-number {
+            font-family: 'Shippori Mincho', serif;
+            color: var(--accent-sakura);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option {
+            background: rgba(15, 15, 30, 0.8);
+            border: 2px solid var(--accent-indigo);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            background: rgba(211, 47, 47, 0.2);
+            border-color: var(--accent-gold);
+            transform: translateX(10px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, rgba(74, 88, 153, 0.4), rgba(211, 47, 47, 0.3));
+            border-color: var(--accent-gold);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.3));
+            border-color: #00ff00;
+            animation: pulse 0.5s ease-out;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(200, 0, 0, 0.3));
+            border-color: #ff0000;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Shippori Mincho', serif;
+            margin-top: 2rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(211, 47, 47, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .result-container {
+            text-align: center;
+            padding: 3rem;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .result-emoji {
+            font-size: 8rem;
+            margin-bottom: 2rem;
+            animation: spin 2s ease-out;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .result-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-japanese {
+            font-size: 1.5rem;
+            color: var(--accent-sakura);
+            margin-bottom: 1rem;
+        }
+
+        .result-message {
+            font-size: 1.3rem;
+            color: var(--text-warm);
+            margin-bottom: 2rem;
+        }
+
+        .hidden { display: none; }
+
+        .coupon-container {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(211, 47, 47, 0.3), rgba(255, 215, 0, 0.3));
+            border: 4px dashed var(--accent-gold);
+            position: relative;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .coupon-container::before,
+        .coupon-container::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .coupon-container::before {
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .coupon-container::after {
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .coupon-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed var(--accent-gold);
+        }
+
+        .coupon-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(211, 47, 47, 0.5);
+        }
+
+        .coupon-subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-sakura);
+            letter-spacing: 0.2em;
+        }
+
+        .coupon-body {
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        .coupon-offer {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+            font-family: 'Shippori Mincho', serif;
+            text-shadow: 0 0 20px rgba(211, 47, 47, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .coupon-description {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .coupon-japanese {
+            font-size: 1.1rem;
+            color: var(--accent-sakura);
+            font-family: 'Shippori Mincho', serif;
+            margin-bottom: 1.5rem;
+        }
+
+        .coupon-code {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-gold);
+            padding: 1rem 2rem;
+            display: inline-block;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            letter-spacing: 0.3em;
+            font-weight: bold;
+        }
+
+        .coupon-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px dashed var(--accent-gold);
+            color: var(--text-warm);
+            font-size: 0.9rem;
+        }
+
+        .coupon-from {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .congrats-badge {
+            display: inline-block;
+            background: var(--accent-red);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .quiz-container { padding: 1.5rem; }
+            .coupon-title { font-size: 2rem; }
+            .coupon-offer { font-size: 2rem; }
+            .coupon-code { font-size: 1.2rem; padding: 0.8rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← 戻る</a>
+
+    <div class="container">
+        <div class="header">
+            <div class="japanese-header">アニメチャレンジ</div>
+            <h1>Anime Challenge 🎮</h1>
+            <p style="color: var(--text-warm); font-size: 1.3rem;">Test your knowledge!</p>
+        </div>
+
+        <div class="score-display">
+            <h2>スコア (Score)</h2>
+            <div class="score" id="scoreDisplay">0 / 0</div>
+        </div>
+
+        <div id="quizContent" class="quiz-container">
+            <div class="question-number" id="questionNumber"></div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>次へ (Next)</button>
+        </div>
+
+        <div id="resultContainer" class="quiz-container result-container hidden">
+            <div class="result-emoji" id="resultEmoji">🎉</div>
+            <div class="result-title" id="resultTitle">Amazing!</div>
+            <div class="result-japanese" id="resultJapanese">素晴らしい！</div>
+            <div class="result-message" id="resultMessage"></div>
+            
+            <!-- Coupon Section -->
+            <div id="couponSection" class="coupon-container hidden">
+                <div class="congrats-badge">🎊 SPECIAL REWARD! 🎊</div>
+                <div class="coupon-header">
+                    <div class="coupon-title">🍜 FOOD COUPON 🍜</div>
+                    <div class="coupon-subtitle">ご褒美クーポン</div>
+                </div>
+                <div class="coupon-body">
+                    <div class="coupon-offer">FREE MEAL</div>
+                    <div class="coupon-description">One complimentary meal of your choice!</div>
+                    <div class="coupon-japanese">お好きな料理一品無料！</div>
+                    <div class="coupon-code">ASIF-TREATS-YOU</div>
+                    <p style="color: var(--text-warm); margin-top: 1rem;">
+                        🎁 Redeem this coupon for a delicious meal!<br>
+                        Valid for any restaurant of your choice!
+                    </p>
+                </div>
+                <div class="coupon-footer">
+                    <p>Present this coupon to claim your reward</p>
+                    <p>クーポンを提示してご利用ください</p>
+                    <div class="coupon-from">— With love from Asif 💝</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="restartQuiz()">もう一度 (Play Again!)</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Which anime features the phrase '俺は海賊王になる!' (I'll become the Pirate King!)?",
+                options: ["Naruto", "One Piece", "Bleach", "Fairy Tail"],
+                correct: 1
+            },
+            {
+                question: "What does '中二病' (chuunibyou) refer to in anime culture?",
+                options: ["Second year of middle school syndrome", "Fighting technique", "Type of ramen", "School uniform"],
+                correct: 0
+            },
+            {
+                question: "In Attack on Titan, what is the Japanese name for Titans?",
+                options: ["巨人 (Kyojin)", "怪物 (Kaibutsu)", "悪魔 (Akuma)", "敵 (Teki)"],
+                correct: 0
+            },
+            {
+                question: "What does 'お帰りなさいませ、ご主人様' mean in maid cafes?",
+                options: ["Good morning, master", "Welcome home, master", "Goodbye, master", "Thank you, master"],
+                correct: 1
+            },
+            {
+                question: "Which studio is famous for magical girl anime like Sailor Moon?",
+                options: ["Studio Ghibli", "Toei Animation", "Kyoto Animation", "MAPPA"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+            document.getElementById('question').textContent = q.question;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            selectedAnswer = null;
+            document.getElementById('nextBtn').disabled = true;
+            updateScore();
+        }
+
+        function selectOption(index) {
+            if (selectedAnswer !== null) return;
+
+            const options = document.querySelectorAll('.option');
+            const correct = quizData[currentQuestion].correct;
+
+            selectedAnswer = index;
+            options[index].classList.add('selected');
+
+            setTimeout(() => {
+                if (index === correct) {
+                    options[index].classList.add('correct');
+                    score++;
+                } else {
+                    options[index].classList.add('incorrect');
+                    options[correct].classList.add('correct');
+                }
+
+                updateScore();
+                document.getElementById('nextBtn').disabled = false;
+            }, 500);
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score} / ${quizData.length}`;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizContent').classList.add('hidden');
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.remove('hidden');
+
+            const percentage = (score / quizData.length) * 100;
+            let emoji, title, japanese, message;
+
+            if (percentage === 100) {
+                emoji = '🏆';
+                title = 'LEGENDARY!';
+                japanese = '伝説的！';
+                message = 'Perfect score! You are a true anime master! 完璧です！ 🌟';
+            } else if (percentage >= 80) {
+                emoji = '⭐';
+                title = 'SUGOI!';
+                japanese = 'すごい！';
+                message = 'Excellent work! Your anime knowledge is impressive! よくできました！ 🔥';
+            } else if (percentage >= 60) {
+                emoji = '😊';
+                title = 'YATTA!';
+                japanese = 'やった！';
+                message = 'Nice job! You know your anime well! 頑張りました！ 📺';
+            } else if (percentage >= 40) {
+                emoji = '💪';
+                title = 'GANBATTE!';
+                japanese = '頑張って！';
+                message = 'Keep going! More anime awaits! もっと頑張ろう！ 🎌';
+            } else {
+                emoji = '🌱';
+                title = 'FAITO!';
+                japanese = 'ファイト！';
+                message = 'The journey begins! Time for more anime! 始まりだよ！ ✨';
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultJapanese').textContent = japanese;
+            document.getElementById('resultMessage').textContent = message;
+
+            // Show coupon if score is 4 or 5 out of 5
+            const couponSection = document.getElementById('couponSection');
+            if (score >= 4) {
+                couponSection.classList.remove('hidden');
+                // Add extra congratulations to message
+                document.getElementById('resultMessage').textContent += '\n\n🎉 You earned a special reward! 🎉';
+            } else {
+                couponSection.classList.add('hidden');
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('quizContent').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>

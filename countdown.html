@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown ⏰</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Rubik:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151932;
+            --accent-pink: #ff6b9d;
+            --accent-purple: #c44fff;
+            --accent-cyan: #00d4ff;
+            --accent-yellow: #ffd93d;
+            --text-light: #ffffff;
+            --text-dim: #a5b4fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(196, 79, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
+            animation: bgPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 107, 157, 0.2);
+            border: 2px solid var(--accent-pink);
+            color: var(--text-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-pink);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        h1 {
+            font-family: 'Righteous', cursive;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-pink), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .birthday-input {
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .birthday-input label {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        .birthday-input input {
+            background: rgba(21, 25, 50, 0.8);
+            border: 2px solid var(--accent-pink);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-family: 'Rubik', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .birthday-input input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(196, 79, 255, 0.4);
+        }
+
+        .countdown-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            animation: scaleIn 1s ease-out 0.7s both;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .countdown-item {
+            background: linear-gradient(135deg, rgba(21, 25, 50, 0.9), rgba(21, 25, 50, 0.7));
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .countdown-item:nth-child(1) {
+            border-color: var(--accent-pink);
+            animation-delay: 0s;
+        }
+
+        .countdown-item:nth-child(2) {
+            border-color: var(--accent-purple);
+            animation-delay: 0.5s;
+        }
+
+        .countdown-item:nth-child(3) {
+            border-color: var(--accent-cyan);
+            animation-delay: 1s;
+        }
+
+        .countdown-item:nth-child(4) {
+            border-color: var(--accent-yellow);
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .countdown-number {
+            font-family: 'Righteous', cursive;
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .countdown-label {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 79, 255, 0.2));
+            border: 2px solid var(--accent-pink);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 107, 157, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 0 40px rgba(255, 107, 157, 0.6); }
+        }
+
+        .message-box h2 {
+            font-family: 'Righteous', cursive;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-yellow);
+        }
+
+        .message-box p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: explode 1.5s ease-out infinite;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .countdown-display {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .countdown-number {
+                font-size: 3rem;
+            }
+            .back-btn {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="fireworks" id="fireworks"></div>
+
+    <a href="index.html" class="back-btn">← Back Home</a>
+
+    <div class="container">
+        <h1>Next Birthday Countdown ⏰</h1>
+        <p class="subtitle">The excitement is building!</p>
+
+        <div class="birthday-input">
+            <label for="birthdayDate">Enter Your Birthday Date:</label>
+            <input type="date" id="birthdayDate" onchange="startCountdown()">
+        </div>
+
+        <div class="countdown-display" id="countdown">
+            <div class="countdown-item">
+                <span class="countdown-number" id="days">000</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="hours">00</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="minutes">00</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-number" id="seconds">00</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+
+        <div class="message-box">
+            <h2>🎉 Get Ready! 🎉</h2>
+            <p id="countdownMessage">
+                Set your birthday date above to start the countdown to your special day! 
+                Another year of adventures, growth, and anime marathons awaits! 🌟
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval;
+        let birthdayDate;
+
+        function startCountdown() {
+            const input = document.getElementById('birthdayDate').value;
+            if (!input) return;
+
+            // Clear existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            // Parse the birthday and find next occurrence
+            const [year, month, day] = input.split('-');
+            const today = new Date();
+            birthdayDate = new Date(today.getFullYear(), parseInt(month) - 1, parseInt(day));
+
+            // If birthday already passed this year, set to next year
+            if (birthdayDate < today) {
+                birthdayDate.setFullYear(today.getFullYear() + 1);
+            }
+
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+
+            // Create fireworks
+            createFireworks();
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = birthdayDate - now;
+
+            if (difference <= 0) {
+                clearInterval(countdownInterval);
+                showBirthdayMessage();
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(3, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            updateMessage(days);
+        }
+
+        function updateMessage(days) {
+            const messageElement = document.getElementById('countdownMessage');
+            
+            if (days === 0) {
+                messageElement.textContent = "🎊 IT'S TODAY! YOUR BIRTHDAY IS HERE! Time to celebrate like a true anime protagonist! 🎊";
+            } else if (days === 1) {
+                messageElement.textContent = "⭐ Tomorrow is the big day! Get ready for an epic birthday celebration! The hype is real! ⭐";
+            } else if (days <= 7) {
+                messageElement.textContent = `🔥 Only ${days} days left! The countdown is almost over! Prepare for an amazing celebration! 🔥`;
+            } else if (days <= 30) {
+                messageElement.textContent = `✨ ${days} days until your special day! Time to start planning the ultimate anime-themed birthday party! ✨`;
+            } else if (days <= 100) {
+                messageElement.textContent = `🌟 ${days} days to go! Plenty of time to watch more anime and build up the excitement! 🌟`;
+            } else {
+                messageElement.textContent = `💫 ${days} days until your birthday! That's enough time for multiple anime series marathons! 💫`;
+            }
+        }
+
+        function showBirthdayMessage() {
+            document.getElementById('countdownMessage').innerHTML = 
+                "🎉🎊🎂 HAPPY BIRTHDAY! 🎂🎊🎉<br>Your special day is finally here! May it be filled with joy, laughter, and all your favorite things!";
+        }
+
+        function createFireworks() {
+            const container = document.getElementById('fireworks');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const centerX = Math.random() * window.innerWidth;
+                    const centerY = Math.random() * window.innerHeight * 0.5;
+
+                    for (let j = 0; j < 12; j++) {
+                        const firework = document.createElement('div');
+                        firework.className = 'firework';
+                        
+                        const angle = (j * 30) * Math.PI / 180;
+                        const distance = 100 + Math.random() * 50;
+                        const tx = Math.cos(angle) * distance;
+                        const ty = Math.sin(angle) * distance;
+
+                        firework.style.left = centerX + 'px';
+                        firework.style.top = centerY + 'px';
+                        firework.style.setProperty('--tx', tx + 'px');
+                        firework.style.setProperty('--ty', ty + 'px');
+                        
+                        const colors = ['#ff6b9d', '#c44fff', '#00d4ff', '#ffd93d'];
+                        firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        firework.style.animationDelay = Math.random() * 0.5 + 's';
+
+                        container.appendChild(firework);
+
+                        setTimeout(() => firework.remove(), 2000);
+                    }
+                }, i * 1000);
+            }
+        }
+
+        // Set default date to today for demonstration
+        const today = new Date();
+        const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+        document.getElementById('birthdayDate').valueAsDate = nextYear;
+    </script>
+</body>
+</html>

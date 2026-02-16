@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!--
+    CUSTOMIZE YOUR IMAGES:
+    
+    To add your own photos:
+    1. Upload your images to the same folder as this HTML file
+    2. Name them: memory1.jpg, memory2.jpg, memory3.jpg, etc.
+    3. Replace the image src URLs below:
+       - Change: src="https://images.unsplash.com/..."
+       - To: src="memory1.jpg" (or your image filename)
+    
+    Example:
+    <img src="memory1.jpg" alt="My Anime Memory">
+    
+    Recommended image sizes: 500x300 pixels for best results
+    Supported formats: .jpg, .jpeg, .png, .gif, .webp
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思い出ギャラリー 🎴</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Shippori+Mincho:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #0f0f1e;
+            --accent-red: #d32f2f;
+            --accent-gold: #ffd700;
+            --accent-sakura: #ffb7c5;
+            --accent-indigo: #4a5899;
+            --text-light: #f5f5f5;
+            --text-warm: #e8d5c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 50px, var(--accent-red) 50px, var(--accent-red) 51px),
+                repeating-linear-gradient(90deg, transparent, transparent 50px, var(--accent-gold) 50px, var(--accent-gold) 51px);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(211, 47, 47, 0.3);
+            border: 2px solid var(--accent-gold);
+            color: var(--text-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        .back-btn:hover {
+            background: var(--accent-red);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(211, 47, 47, 0.4);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .japanese-header {
+            font-size: 2rem;
+            color: var(--accent-sakura);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3em;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        h1 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-warm);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .memory-card {
+            background: linear-gradient(135deg, rgba(15, 15, 30, 0.9), rgba(26, 26, 46, 0.8));
+            border: 3px solid var(--accent-gold);
+            border-radius: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            animation: scaleIn 0.6s ease-out both;
+            position: relative;
+        }
+
+        .memory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-gold), var(--accent-sakura));
+        }
+
+        .memory-card:nth-child(1) { animation-delay: 0.1s; }
+        .memory-card:nth-child(2) { animation-delay: 0.2s; }
+        .memory-card:nth-child(3) { animation-delay: 0.3s; }
+        .memory-card:nth-child(4) { animation-delay: 0.4s; }
+        .memory-card:nth-child(5) { animation-delay: 0.5s; }
+        .memory-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .memory-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(211, 47, 47, 0.4);
+            border-color: var(--accent-red);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .memory-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .memory-card:hover .memory-image img {
+            transform: scale(1.1);
+        }
+
+        .memory-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(26, 26, 46, 0.3) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .memory-content {
+            padding: 1.5rem;
+        }
+
+        .memory-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            color: var(--accent-gold);
+        }
+
+        .memory-japanese {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 0.9rem;
+            color: var(--accent-sakura);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .memory-description {
+            color: var(--text-warm);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .memory-date {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--accent-indigo);
+            font-weight: 600;
+            font-family: 'Shippori Mincho', serif;
+        }
+
+        .ema-board {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, rgba(211, 47, 47, 0.1), rgba(74, 88, 153, 0.1));
+            border-top: 3px solid var(--accent-gold);
+            border-bottom: 3px solid var(--accent-gold);
+        }
+
+        .ema-board h2 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+        }
+
+        .ema-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .ema {
+            width: 200px;
+            height: 250px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            clip-path: polygon(50% 0%, 100% 15%, 100% 100%, 0% 100%, 0% 15%);
+            padding: 2.5rem 1.5rem 1.5rem;
+            position: relative;
+            transition: transform 0.3s ease;
+            animation: hang 3s ease-in-out infinite;
+        }
+
+        .ema:nth-child(1) { animation-delay: 0s; }
+        .ema:nth-child(2) { animation-delay: 0.5s; }
+        .ema:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes hang {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .ema:hover {
+            transform: scale(1.1) rotate(0deg) !important;
+        }
+
+        .ema-content {
+            background: rgba(245, 245, 220, 0.95);
+            height: 100%;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-gold);
+            overflow: hidden;
+        }
+
+        .ema-content img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .ema-text {
+            font-family: 'Shippori Mincho', serif;
+            color: #333;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .ema::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 30px;
+            background: var(--accent-gold);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .back-btn {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <a href="index.html" class="back-btn">← 戻る</a>
+
+    <div class="container">
+        <div class="header">
+            <div class="japanese-header">思い出ギャラリー</div>
+            <h1>Memory Gallery 🎴</h1>
+            <p class="subtitle">Precious moments preserved</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="memory-card">
+                <div class="memory-image">
+                    <!-- Replace 'image1.jpg' with your own image -->
+                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&h=300&fit=crop" alt="Anime Memory 1" onerror="this.src='https://via.placeholder.com/500x300/d32f2f/ffffff?text=First+Anime'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">First Anime Journey</h3>
+                    <p class="memory-japanese">最初のアニメの旅</p>
+                    <p class="memory-description">
+                        
+                    </p>
+                    <p class="memory-date">始まりの時 ✨</p>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="memory-image">
+                    <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&h=300&fit=crop" alt="Anime Memory 2" onerror="this.src='https://via.placeholder.com/500x300/4a5899/ffffff?text=Marathon+Session'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">Marathon Sessions</h3>
+                    <p class="memory-japanese">マラソン視聴</p>
+                    <p class="memory-description">
+                       </p>
+                    <p class="memory-date">数え切れない夜 🌙</p>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="memory-image">
+                    <img src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=500&h=300&fit=crop" alt="Anime Memory 3" onerror="this.src='https://via.placeholder.com/500x300/ffd700/333333?text=Character+Growth'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">Character Evolution</h3>
+                    <p class="memory-japanese">キャラクターの成長</p>
+                    <p class="memory-description">
+                       </p>
+                    <p class="memory-date">全てのアーク 🔥</p>
+                </div>
+            </div>
+
+            <!-- <div class="memory-card">
+                <div class="memory-image">
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=500&h=300&fit=crop" alt="Anime Memory 4" onerror="this.src='https://via.placeholder.com/500x300/ffb7c5/333333?text=Emotional+Moments'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">Emotional Moments</h3>
+                    <p class="memory-japanese">感動の瞬間</p>
+                    <p class="memory-description">
+                        That episode that touched your soul. Tears flowed, hearts broke, and something within you 
+                        changed forever. The power of storytelling at its finest—永遠に心に残る (forever in your heart).
+                    </p>
+                    <p class="memory-date">忘れられない 💔</p>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="memory-image">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=300&fit=crop" alt="Anime Memory 5" onerror="this.src='https://via.placeholder.com/500x300/d32f2f/ffffff?text=Epic+Music'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">Epic Soundtracks</h3>
+                    <p class="memory-japanese">壮大なサウンドトラック</p>
+                    <p class="memory-description">
+                        When that perfect opening theme drops and you can't resist singing along every single time! 
+                        Those OSTs that give you goosebumps even in everyday moments.
+                    </p>
+                    <p class="memory-date">リピート再生 🎧</p>
+                </div>
+            </div>
+
+            <div class="memory-card">
+                <div class="memory-image">
+                    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&h=300&fit=crop" alt="Anime Memory 6" onerror="this.src='https://via.placeholder.com/500x300/4a5899/ffffff?text=Finding+Friends'">
+                </div>
+                <div class="memory-content">
+                    <h3 class="memory-title">Finding Your Nakama</h3>
+                    <p class="memory-japanese">仲間を見つける</p>
+                    <p class="memory-description">
+                        Discovering your people—those who share your passion, debate character development with you, 
+                        and celebrate new season announcements together. True 仲間 (nakama) bonds!
+                    </p>
+                    <p class="memory-date">永遠の友達 🤝</p>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="ema-board">
+            <h2>絵馬 Wish Boards</h2>
+            <p style="color: var(--text-warm); margin-bottom: 2rem;">Traditional prayer plaques for your anime journey</p>
+            
+            <div class="ema-container">
+                <div class="ema">
+                    <div class="ema-content">
+                        <img src="https://images.unsplash.com/photo-1522383225653-ed111181a951?w=200&h=120&fit=crop" alt="Sakura" onerror="this.style.display='none'">
+                        <div class="ema-text">桜の季節<br>Sakura Season</div>
+                    </div>
+                </div>
+                <div class="ema">
+                    <div class="ema-content">
+                        <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?w=200&h=120&fit=crop" alt="Epic Battles" onerror="this.style.display='none'">
+                        <div class="ema-text">戦いの記憶<br>Epic Battles</div>
+                    </div>
+                </div>
+                <div class="ema">
+                    <div class="ema-content">
+                        <img src="https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=200&h=120&fit=crop" alt="Festivals" onerror="this.style.display='none'">
+                        <div class="ema-text">祭りの夜<br>Festivals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
